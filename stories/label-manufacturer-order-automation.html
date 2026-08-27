@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>An order that invoices itself | taylorWilco</title>
+<meta name="description" content="A European label manufacturer’s order chain ran on email. How we made it touchless and built the reporting its channel partner needed.">
+<link rel="canonical" href="https://taylorwilco.com/stories/label-manufacturer-order-automation.html">
+<meta property="og:site_name" content="taylorWilco">
+<meta property="og:title" content="An order that invoices itself | taylorWilco">
+<meta property="og:description" content="A European label manufacturer’s order chain ran on email. How we made it touchless and built the reporting its channel partner needed.">
+<meta property="og:url" content="https://taylorwilco.com/stories/label-manufacturer-order-automation.html">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://taylorwilco.com/og-manufacturing.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta name="twitter:image" content="https://taylorwilco.com/og-manufacturing.png">
+<meta name="twitter:title" content="An order that invoices itself | taylorWilco">
+<meta name="twitter:description" content="A European label manufacturer’s order chain ran on email. How we made it touchless and built the reporting its channel partner needed.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,700;1,800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,700;1,800&display=swap" media="all">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,700;1,800&display=swap"></noscript>
+<style>
+:root{
+  --blue:#42A5F6; --blue-dk:#2E90E0;
+  --ink:#1E1E1E; --ink-2:#2E2E2E; --ink-3:#4A4A4A;
+  --body:#5A6270;
+  --paper:#F8FAFC; --paper-2:#EEF2F7; --nav:rgba(247,248,250,.97);
+  --line:rgba(74,74,74,.12);
+  --pad:112px; --gut:72px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Nunito Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17.6px;line-height:1.8;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:1400px;margin:0 auto;padding:0 var(--gut)}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;height:97px;
+  background:var(--nav);backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line)}
+.nav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:32px}
+.nav .logo img{height:56px;width:auto}
+.navlinks{display:flex;align-items:center;gap:42px}
+.navlinks a{font-size:16px;font-weight:400;letter-spacing:.86px;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;white-space:nowrap;transition:color .18s}
+.navlinks a:hover{color:var(--blue)}
+.navlinks a.here{color:var(--blue)}
+.navlinks a.pill{background:var(--blue);color:#fff;border-radius:3px;padding:14px 28px}
+.navlinks a.pill:hover{background:var(--blue-dk);color:#fff}
+.burger{display:none;background:none;border:0;padding:8px;cursor:pointer}
+.burger span{display:block;width:24px;height:2px;background:var(--ink);margin:5px 0}
+
+/* ---------- type ---------- */
+h1,h2,h3{margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(40px,5vw,73px);line-height:1.12;font-weight:700}
+h1 em{font-style:italic;color:var(--blue);font-weight:700}
+h2{font-size:clamp(30px,3.2vw,41px);line-height:1.18;font-weight:800}
+h3{font-size:19px;line-height:1.45;font-weight:700;letter-spacing:-.005em}
+p{margin:0 0 22px}
+.lede{font-size:20px;line-height:1.75;color:var(--body);max-width:44em}
+.prose p{color:var(--body)}
+.prose p:last-child{margin-bottom:0}
+.eyebrow{display:flex;align-items:center;gap:16px;font-size:13px;font-weight:600;
+  letter-spacing:2.2px;text-transform:uppercase;color:var(--blue);margin-bottom:28px}
+.eyebrow::before{content:"";width:26px;height:2px;background:currentColor;flex:none}
+.eyebrow.on-dark{color:rgba(255,255,255,.72)}
+.eyebrow.on-blue{color:rgba(255,255,255,.85)}
+
+/* ---------- sections ---------- */
+section{padding:var(--pad) 0}
+.s-paper{background:var(--paper)}
+.s-alt{background:var(--paper-2)}
+.s-dark{background:var(--ink-2);color:#fff}
+.s-dark p,.s-dark .sub{color:rgba(255,255,255,.68)}
+.s-blue{background:var(--blue);color:#fff}
+.hero{padding:172px 0 88px;background:var(--paper)}
+.hero h1{max-width:21ch}
+.hero .lede{margin-top:34px}
+
+/* ---------- fact strip ---------- */
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:64px;
+  border-top:1px solid var(--line)}
+.facts>div{padding:26px 32px 0 32px;border-right:1px solid var(--line)}
+.facts>div:first-child{padding-left:0}
+.facts>div:last-child{border-right:0}
+.facts dt{font-size:12px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--blue);margin:0 0 8px}
+.facts dd{margin:0;font-size:16.5px;font-weight:600;color:var(--ink);line-height:1.5}
+
+/* ---------- glance strip (dark) ---------- */
+.glance{display:grid;grid-template-columns:repeat(4,1fr);gap:48px}
+.glance>div>.n{font-size:clamp(38px,4vw,52px);font-weight:800;line-height:1;color:var(--blue);
+  letter-spacing:-.03em;margin-bottom:14px}
+.glance>div>.l{font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.7)}
+
+/* ---------- split ---------- */
+.split{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:80px;align-items:start}
+.split .sub{margin-top:24px;color:var(--body);font-size:17px}
+
+/* ---------- numbered list ---------- */
+.steps{display:grid;gap:44px}
+.step{display:grid;grid-template-columns:64px minmax(0,1fr);gap:24px;align-items:start}
+.step .num{font-size:19px;font-weight:800;color:var(--blue);letter-spacing:.5px;padding-top:1px}
+.step p{margin:10px 0 0;color:var(--body);font-size:16.5px;line-height:1.75}
+.s-dark .step p{color:rgba(255,255,255,.68)}
+.s-dark .step h3{color:#fff}
+
+/* ---------- results ---------- */
+.results{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:64px;
+  border-top:1px solid rgba(255,255,255,.16)}
+.results>div{padding:34px 34px 0 34px;border-right:1px solid rgba(255,255,255,.16)}
+.results>div:first-child{padding-left:0}
+.results>div:last-child{border-right:0}
+.results>div>.n{font-size:clamp(36px,3.6vw,46px);font-weight:800;color:var(--blue);
+  line-height:1;letter-spacing:-.03em}
+.results>div>.k{margin:16px 0 8px;font-size:16px;font-weight:700;color:#fff}
+.results>div>.d{font-size:15px;line-height:1.6;color:rgba(255,255,255,.6)}
+.note-wrap{margin-top:60px;padding-top:34px;border-top:1px solid rgba(255,255,255,.16)}
+.note{margin:0;font-size:19px;line-height:1.75;color:rgba(255,255,255,.82);max-width:52em;font-weight:300}
+
+/* ---------- now cards ---------- */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:64px;
+  border-top:1px solid var(--line)}
+.cards>div{padding:30px 34px 0 34px;border-right:1px solid var(--line)}
+.cards>div:first-child{padding-left:0}
+.cards>div:last-child{border-right:0}
+.cards h3{margin-bottom:12px}
+.cards p{color:var(--body);font-size:15.5px;line-height:1.7;margin:0}
+
+/* ---------- story index cards ---------- */
+.stories{display:grid;gap:0;margin-top:72px;border-top:1px solid var(--line)}
+.story{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:72px;
+  padding:52px 0;border-bottom:1px solid var(--line);text-decoration:none;
+  transition:background .2s}
+.story:hover{background:rgba(66,165,246,.05)}
+.story:hover .go{color:var(--blue-dk)}
+.story .k{font-size:12.5px;font-weight:600;letter-spacing:1.9px;text-transform:uppercase;
+  color:var(--blue);margin-bottom:16px}
+.story h2{font-size:clamp(26px,2.7vw,36px);max-width:26ch}
+.story p{margin:20px 0 0;color:var(--body);font-size:16.5px;max-width:52em}
+.story .go{display:inline-flex;align-items:center;gap:10px;margin-top:26px;font-size:13.6px;
+  font-weight:600;letter-spacing:.68px;text-transform:uppercase;color:var(--blue)}
+.story .stat{border-left:1px solid var(--line);padding-left:44px;align-self:stretch;
+  display:flex;flex-direction:column;justify-content:center}
+.story .stat .n{font-size:clamp(40px,4vw,54px);font-weight:800;color:var(--ink);
+  line-height:1;letter-spacing:-.03em}
+.story .stat .l{margin-top:16px;font-size:15px;line-height:1.6;color:var(--body)}
+
+/* ---------- more stories strip ---------- */
+.more{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:56px;
+  border-top:1px solid var(--line)}
+.more a{display:block;padding:34px 40px 34px 0;border-right:1px solid var(--line);
+  text-decoration:none;transition:background .2s}
+.more a:last-child{border-right:0;padding-left:40px}
+.more a:hover{background:rgba(66,165,246,.05)}
+.more .k{font-size:12px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--blue);margin-bottom:12px}
+.more h3{font-size:22px;max-width:22ch}
+.more span{display:inline-block;margin-top:14px;font-size:13.6px;font-weight:600;
+  letter-spacing:.68px;text-transform:uppercase;color:var(--blue)}
+
+/* ---------- cta + footer ---------- */
+.cta{text-align:center}
+.cta .eyebrow{justify-content:center}
+.cta h2{font-size:clamp(32px,3.6vw,46px);max-width:20ch;margin:0 auto}
+.cta h2 em{font-style:italic}
+.cta p{margin:26px auto 0;max-width:34em;color:rgba(255,255,255,.88);font-size:18px}
+.btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:44px}
+.btn{display:inline-block;padding:16px 34px;border-radius:3px;font-size:13.6px;font-weight:500;
+  letter-spacing:.68px;text-transform:uppercase;text-decoration:none;transition:.18s}
+.btn-solid{background:#fff;color:var(--blue)}
+.btn-solid:hover{background:rgba(255,255,255,.9)}
+.btn-ghost{border:1px solid rgba(255,255,255,.6);color:#fff}
+.btn-ghost:hover{background:rgba(255,255,255,.12)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--blue-dk)}
+.foot{background:var(--ink);color:rgba(255,255,255,.62);padding:56px 0 40px;font-size:14.5px}
+.foot img{height:24px;width:auto;filter:brightness(0) invert(1)}
+.foot-top{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:64px;align-items:start;
+  padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.14)}
+.foot-col h4{margin:0 0 16px;font-size:12px;font-weight:600;letter-spacing:1.8px;
+  text-transform:uppercase;color:rgba(255,255,255,.42)}
+.foot-col a{display:block;margin-bottom:11px;color:rgba(255,255,255,.75);text-decoration:none;
+  font-size:14.5px;line-height:1.5;transition:color .16s;white-space:nowrap}
+.foot-col a:hover{color:var(--blue)}
+.foot-bottom{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  flex-wrap:wrap;padding-top:28px}
+.foot-bottom span{color:rgba(255,255,255,.5)}
+.pubdate{margin-top:26px;font-size:13px;font-weight:600;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--body)}
+.backlink{display:inline-flex;align-items:center;gap:10px;font-size:12.5px;font-weight:600;
+  letter-spacing:1.8px;text-transform:uppercase;color:var(--body);text-decoration:none;
+  margin-bottom:46px}
+.backlink:hover{color:var(--blue)}
+
+@media (max-width:1080px){
+  :root{--pad:84px;--gut:40px}
+  .split{grid-template-columns:1fr;gap:38px}
+  .facts,.glance,.results,.cards{grid-template-columns:repeat(2,1fr)}
+  .facts>div:nth-child(2n),.results>div:nth-child(2n),.cards>div:nth-child(2n){border-right:0}
+  .facts>div:nth-child(n+3),.results>div:nth-child(n+3),.cards>div:nth-child(n+3){margin-top:34px}
+  .facts>div:nth-child(2n+1),.results>div:nth-child(2n+1),.cards>div:nth-child(2n+1){padding-left:0}
+  .glance{gap:38px}
+  .story{grid-template-columns:1fr;gap:34px}
+  .story .stat{border-left:0;border-top:1px solid var(--line);padding:28px 0 0}
+  .more{grid-template-columns:1fr}
+  .more a{border-right:0;border-bottom:1px solid var(--line);padding:30px 0}
+  .more a:last-child{border-bottom:0;padding-left:0}
+  .foot-top{grid-template-columns:1fr 1fr;gap:36px}
+}
+@media (max-width:720px){
+  :root{--pad:64px;--gut:24px}
+  body{font-size:16.5px}
+  .hero{padding:140px 0 64px}
+  .navlinks{display:none}
+  .navlinks.open{display:flex;position:absolute;top:97px;left:0;right:0;flex-direction:column;
+    align-items:flex-start;gap:0;background:var(--nav);border-bottom:1px solid var(--line);
+    padding:12px 24px 24px}
+  .navlinks.open a{padding:14px 0;width:100%}
+  .navlinks.open a.pill{margin-top:10px;text-align:center}
+  .burger{display:block}
+  .facts,.glance,.results,.cards{grid-template-columns:1fr;gap:0}
+  .facts>div,.results>div,.cards>div{border-right:0;border-bottom:1px solid var(--line);padding:22px 0!important;margin-top:0!important}
+  .results>div{border-bottom-color:rgba(255,255,255,.16)}
+  .facts>div:last-child,.results>div:last-child,.cards>div:last-child{border-bottom:0}
+  .glance>div{padding:22px 0;border-bottom:1px solid rgba(255,255,255,.16)}
+  .glance>div:last-child{border-bottom:0}
+  .step{grid-template-columns:1fr;gap:6px}
+  .foot-top{grid-template-columns:1fr;gap:30px}
+  .foot-col a{white-space:normal}
+  .nav{height:72px}
+  .nav .logo img{height:38px}
+  .navlinks.open{top:72px}
+}
+.skip-link{position:absolute;left:-9999px}
+.skip-link:focus{position:fixed;left:16px;top:16px;z-index:1000;background:#fff;color:#1E1E1E;padding:10px 16px;border:2px solid #42A5F6;border-radius:3px;font-weight:700}
+
+</style>
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"An order that invoices itself.","description":"A European label manufacturer’s order chain ran on email. How we made it touchless and built the reporting its channel partner needed.","url":"https://taylorwilco.com/stories/label-manufacturer-order-automation.html","image":"https://taylorwilco.com/og-manufacturing.png","datePublished":"2026-08-23","dateModified":"2026-08-23","author":{"@type":"Organization","name":"taylorWilco"},"publisher":{"@type":"Organization","name":"taylorWilco","logo":{"@type":"ImageObject","url":"https://taylorwilco.com/taylorwilco-logo-448.png"}}}</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EMWEF31MQX"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-EMWEF31MQX');
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="taylorWilco home"><img src="/taylorwilco-logo-448.png" alt="taylorWilco" width="448" height="84"></a>
+    <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="navlinks">
+      <a href="/#philosophy">Our Approach</a>
+      <a href="/#serve">Who We Serve</a>
+      <a href="/#process">How It Works</a>
+      <a href="/stories/" class="here">Success Stories</a>
+      <a class="pill" href="/#contact">Connect</a>
+    </div>
+  </div>
+</nav>
+<main id="main">
+<header class="hero">
+  <div class="wrap">
+    <a class="backlink" href="/stories/">&larr;&nbsp; All success stories</a>
+    <div class="eyebrow">Client story</div>
+    <h1>An order that <em>invoices</em> itself.</h1>
+    <p class="lede">The product was never the constraint. The manufacturer owns the specification and the tooling behind a duplex label that images a shipping label and a packing list in a single pass. What it did not have was commercial machinery built for the volume a channel partnership creates.</p>
+    <div class="pubdate">Ongoing since August 2026</div>
+    <dl class="facts"><div><dt>Client</dt><dd>Specialist label manufacturer</dd></div><div><dt>Sector</dt><dd>Manufacturing &amp; logistics</dd></div><div><dt>Market</dt><dd>Northern Europe</dd></div><div><dt>Scope</dt><dd>Revenue automation, channel infrastructure</dd></div></dl>
+  </div>
+</header>
+
+<section class="s-dark" style="padding:80px 0">
+  <div class="wrap"><div class="glance"><div><div class="n">~1 sec</div><div class="l">from website order to invoice, CRM, ledger and plant instruction</div></div><div><div class="n">0</div><div class="l">manual steps left in the order chain</div></div><div><div class="n">3</div><div class="l">partner markets reporting on a live dashboard</div></div><div><div class="n">8</div><div class="l">languages across the commercial pages</div></div></div></div>
+</section>
+
+<section class="s-alt">
+  <div class="wrap split">
+    <div><div class="eyebrow">The situation</div><h2>The product was never the constraint.</h2></div>
+    <div class="prose"><p>The manufacturer owns the specification and the tooling behind a duplex label that images a shipping label and a packing list in a single pass — established product, established IP. What it did not have was commercial machinery built for the volume a channel partnership creates.</p><p>The order chain ran on email. Each order set off the same sequence by hand — raise the invoice, record the customer, book it, instruct the plant, chase the confirmation — and each sample request repeated it. Meanwhile a channel partner cannot sell what it cannot see: there was no shared view of leads or orders by market, and nothing the partner’s own marketing team could publish without asking first.</p></div>
+  </div>
+</section>
+
+<section class="s-paper">
+  <div class="wrap split">
+    <div><div class="eyebrow">The work</div><h2>What we did.</h2>
+      <p class="sub">One principle throughout: if a step can be done without a person, it is done without a person.</p></div>
+    <div class="steps"><div class="step"><div class="num">01</div><div><h3>An order chain with nobody in it.</h3><p>An order placed on the website now creates the customer and the invoice, the organisation, contact and deal in the CRM, the ledger entry, and the production instruction to the plant — automatically, in about a second, proven end to end on real orders. Volume pricing is applied at the point of order, so the invoice is right the first time.</p></div></div><div class="step"><div class="num">02</div><div><h3>Every route in, connected.</h3><p>Sample requests, laser-test requests and general enquiries each create a CRM record and route by request type, so every inbound reaches the same system the orders do.</p></div></div><div class="step"><div class="num">03</div><div><h3>Infrastructure the channel can actually use.</h3><p>A live partner dashboard reading directly from the CRM, reporting leads, orders and volume by region and refreshing itself through the day. Alongside it, commercial pages that carry the whole transaction — payment terms included — in eight languages, and a press and brand asset kit the partner’s marketing team can publish from without waiting on anyone.</p></div></div></div>
+  </div>
+</section>
+
+<section class="s-dark">
+  <div class="wrap">
+    <div class="eyebrow on-dark">Results</div>
+    <h2>What changed.</h2>
+    <div class="results"><div><div class="n">~1 sec</div><div class="k">Order to invoice</div><div class="d">customer, invoice, CRM, ledger and plant instruction, unattended</div></div><div><div class="n">0</div><div class="k">Manual steps</div><div class="d">in a chain that previously ran on email end to end</div></div><div><div class="n">100%</div><div class="k">Inbound captured</div><div class="d">orders, samples and enquiries all reach the CRM</div></div><div><div class="n">3</div><div class="k">Markets reporting</div><div class="d">on a partner dashboard reading live CRM data</div></div></div>
+    <div class="note-wrap"><p class="note">The order chain no longer occupies anyone’s day. The channel partner has a live view of its own performance and a brand kit it can publish from.</p></div>
+  </div>
+</section>
+
+<section class="s-paper">
+  <div class="wrap split">
+    <div><div class="eyebrow">Ongoing</div><h2>What we&rsquo;re doing now.</h2></div>
+    <div class="steps"><div class="step"><div class="num">&nbsp;</div><div><h3>Channel launch</h3><p>A sustained campaign into the partner markets, with the messaging standard governing every asset.</p></div></div><div class="step"><div class="num">&nbsp;</div><div><h3>Partner reporting</h3><p>Extending the dashboard into a monthly partner report, routing each market&rsquo;s enquiries to the right regional lead automatically.</p></div></div><div class="step"><div class="num">&nbsp;</div><div><h3>Shipment acknowledgement</h3><p>Closing the last manual loop &mdash; despatch confirmation and tracking logged against the original record and sent on to the customer with no person in the middle.</p></div></div><div class="step"><div class="num">&nbsp;</div><div><h3>Customer stories</h3><p>Turning delivered installations into published proof the partner&rsquo;s sales teams can use.</p></div></div></div>
+  </div>
+</section>
+
+<section class="s-alt" style="padding:88px 0">
+  <div class="wrap">
+    <div class="eyebrow">More stories</div>
+    <h2 style="font-size:clamp(26px,2.6vw,34px)">Other work we&rsquo;ve done.</h2>
+    <div class="more"><a href="/stories/salon-google-profile.html"><div class="k">Salon &amp; personal services &middot; Sweden</div><h3>The listing Google wouldn’t unlock.</h3><span>Read the story &rarr;</span></a><a href="/stories/gate-installer-direct-mail.html"><div class="k">Access control &amp; field services &middot; United States</div><h3>Direct mail that finds the gates.</h3><span>Read the story &rarr;</span></a></div>
+  </div>
+</section>
+
+<section class="s-blue cta">
+  <div class="wrap">
+    <div class="eyebrow on-blue">Connect with taylorWilco</div>
+    <h2>Entrepreneurs, not consultants. The difference <em>matters</em>.</h2>
+    <p>We take a limited number of engagements at a time. If you are an established business owner ready to sharpen your competitive edge, let&rsquo;s talk.</p>
+    <div class="btns">
+      <a class="btn btn-solid" href="https://www.linkedin.com/company/taylor-wilco/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/company/taylor-wilco/" target="_blank" rel="noopener">Find us on LinkedIn</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div><img src="/taylorwilco-logo-448.png" alt="taylorWilco" width="448" height="84"></div>
+      <div class="foot-col">
+        <h4>taylorWilco</h4>
+        <a href="/#philosophy">Our Approach</a>
+        <a href="/#serve">Who We Serve</a>
+        <a href="/#process">How It Works</a>
+        <a href="/privacy.html">Privacy</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>entrepreneurs guiding entrepreneurs</span>
+      <span>&copy; 2026 taylorWilco. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelector('.burger').addEventListener('click',function(){
+  document.querySelector('.navlinks').classList.toggle('open');
+});
+document.addEventListener('click',function(e){
+  var a=e.target.closest&&e.target.closest('a');
+  if(!a||typeof gtag!=='function')return;
+  var h=a.getAttribute('href')||'';
+  if(h.indexOf('linkedin.com/company/taylor-wilco/')>-1){
+    gtag('event','contact_click',{link_text:(a.textContent||'').trim(),page_path:location.pathname});
+  }else if(h.indexOf('linkedin.com')>-1){
+    gtag('event','linkedin_click',{page_path:location.pathname});
+  }
+});
+</script>
+</body>
+</html>
